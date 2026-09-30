@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Supermania Connect Four</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#070d2b">
+<link rel="icon" href="icon-192.png"><link rel="apple-touch-icon" href="icon-192.png">
+<link rel="stylesheet" href="style.css">
+</head><body>
+<div id="splash"><img src="splash.png" alt="" onerror="this.parentNode.remove()"></div>
+<script>setTimeout(function(){var s=document.getElementById('splash');if(s)s.remove()},3000)</script>
+<main id="app">
+
+<section class="sc" id="home">
+ <div id="me"></div>
+ <img id="logo" src="home-logo.png" alt="Supermania Connect Four" onerror="this.hidden=true;document.getElementById('wm').hidden=false">
+ <h1 id="wm" hidden><small>SUPERMANIA</small>CONNECT FOUR</h1>
+ <div class="grid">
+  <button class="mode" data-go="friends"><b>Play with friends</b></button>
+  <button class="mode" data-go="bot"><b>Computer</b></button>
+  <button class="mode wide" data-go="pass"><b>Pass N Play</b></button>
+ </div>
+ <button class="btn" id="shareapp">Share app</button>
+ <button class="btn p" id="install" hidden>Install app</button>
+ <p class="credit">Made by <b>Supermania Games</b> · Presented by <b>Boring Games</b></p>
+</section>
+
+<section class="sc" id="auth" hidden>
+ <h2>Sign in to play online</h2>
+ <input id="u" placeholder="Username" autocomplete="username" maxlength="14" autocapitalize="off">
+ <input id="p" type="password" placeholder="Password (6+ characters)" autocomplete="current-password">
+ <button class="btn p" id="signin">Sign in</button>
+ <button class="btn" id="signup">Create account</button>
+ <button class="btn" id="guest">Play as guest</button>
+ <p class="hint">Guests can play online right away. Type a name above if you like.</p>
+ <p class="err" id="aerr"></p>
+ <button class="btn" data-back>Back</button>
+</section>
+
+<section class="sc" id="chars" hidden>
+ <h2>Choose your character</h2>
+ <div id="avgrid"></div>
+ <button class="btn p" data-back>Done</button>
+</section>
+
+<section class="sc" id="setup" hidden>
+ <h2>New game</h2>
+ <div class="seg" data-k="mode"><button data-v="bot">Computer</button><button data-v="pass">Pass N Play</button></div>
+ <p class="lbl" id="lvll">Computer level</p>
+ <div class="seg" id="lvl" data-k="level"><button data-v="easy">Easy</button><button data-v="medium">Medium</button><button data-v="hard">Hard</button><button data-v="expert">Expert</button></div>
+ <p class="lbl">Who goes first?</p>
+ <div class="seg" data-k="first"><button data-v="1">Red</button><button data-v="2">Yellow</button><button data-v="r">Random</button></div>
+ <button class="btn p" id="play">Play</button>
+ <button class="btn" data-back>Back</button>
+</section>
+
+<section class="sc" id="friends" hidden>
+ <h2>Play with friends</h2>
+ <button class="btn p" id="create">Create room</button>
+ <p>or enter a room code</p>
+ <input id="code" inputmode="numeric" maxlength="4" placeholder="4-digit code">
+ <button class="btn" id="join">Join room</button>
+ <p class="err" id="ferr"></p>
+ <button class="btn" data-back>Back</button>
+</section>
+
+<section class="sc" id="game" hidden>
+ <div id="bar"><button class="btn" data-back>Menu</button><div id="status"></div><button class="btn" id="mute" aria-label="Sound on or off">Sound</button></div>
+ <div class="crow" id="cards"></div>
+ <div id="board"></div>
+</section>
+
+</main>
+
+<div id="result" hidden>
+ <div id="confetti"></div>
+ <div class="rbox">
+  <div class="rtitle" id="rtitle">Congratulations!</div>
+  <div id="rlist"></div>
+  <div class="rbtns"><button class="btn" id="rmenu">Menu</button><button class="btn" id="rshare">Share</button><button class="btn p" id="rreplay">Replay</button></div>
+ </div>
+</div>
+<div id="dlg" hidden>
+ <div class="rbox">
+  <div class="rtitle" id="dt"></div>
+  <p id="dp"></p>
+  <div class="rbtns"><button class="btn" id="dno">Stay</button><button class="btn p" id="dyes">Leave</button></div>
+ </div>
+</div>
+
+<script type="module" src="main.js"></script>
+</body></html>
