@@ -1,9 +1,9 @@
 {
-  "id": "supermania-connect-four",
+  "id": "supermania-connect-four-app",
   "name": "Supermania Connect Four",
   "short_name": "Connect Four",
   "description": "Connect Four with friends, the computer, or on one phone.",
-  "start_url": "./",
+  "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",

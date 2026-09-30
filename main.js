@@ -8,7 +8,7 @@ try{mp=await import('./multiplayer.js')}catch(e){
 
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
 const NAME={1:'Red',2:'Yellow'};
-const S={mode:'pass',level:'medium',first:1};
+const S={mode:'pass',level:'medium',first:1,how:'basics'};
 let g=null,ctx={hc:-1};
 const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -103,6 +103,7 @@ function buildAvGrid(){
 function markSeg(){
   $$('.seg').forEach(sg=>[...sg.children].forEach(b=>b.classList.toggle('on',String(S[sg.dataset.k])==b.dataset.v)));
   const bot=S.mode=='bot';$('#lvl').hidden=!bot;$('#lvll').hidden=!bot;
+  $$('.hp').forEach(p=>p.hidden=p.dataset.t!=S.how);
 }
 $$('.seg').forEach(sg=>sg.onclick=e=>{const b=e.target.closest('button');if(!b)return;S[sg.dataset.k]=isNaN(b.dataset.v)?b.dataset.v:+b.dataset.v;markSeg()});
 markSeg();
@@ -129,6 +130,7 @@ function home(){leave();show('home');renderMe()}
 
 $$('[data-go]').forEach(b=>b.onclick=()=>{
   const v=b.dataset.go;
+  if(v=='how'){S.how='basics';markSeg();return show('how')}
   if(v=='friends')return show(mp.me()?'friends':'auth');
   S.mode=v;markSeg();show('setup');
 });
@@ -304,7 +306,7 @@ function disc(p,r,c){
 }
 function buildBoard(){
   const b=$('#board');
-  b.innerHTML='<div id="pv"></div><div id="bfrm"><div id="dl"></div><div id="face"></div><div id="ring"></div><div id="wl"></div><div id="cols"></div></div>';
+  b.innerHTML='<div id="pv"></div><div id="plate"><div id="bfrm"><div id="dl"></div><div id="face"></div><div id="ring"></div><div id="bev"></div><div id="wl"></div><div id="cols"></div></div></div><div id="feet"><i></i><i></i></div>';
   const cs=$('#cols');
   for(let c=0;c<7;c++){
     const k=document.createElement('button');k.setAttribute('aria-label','Drop in column '+(c+1));
@@ -435,6 +437,6 @@ addEventListener('beforeinstallprompt',e=>{e.preventDefault();installEvt=e;showI
 addEventListener('appinstalled',()=>{installEvt=null;showInstall()});
 $('#install').onclick=async()=>{
   if(installEvt){installEvt.prompt();await installEvt.userChoice;installEvt=null;showInstall()}
-  else alert('On iPhone: tap the Share button, then Add to Home Screen.');
+  else ask('Install on iPhone','Tap the Share button in Safari, then choose Add to Home Screen.','OK',()=>{},true);
 };
 showInstall();

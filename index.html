@@ -4,6 +4,11 @@
 <title>Supermania Connect Four</title>
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#070d2b">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Supermania Connect Four">
+<meta property="og:description" content="Play Connect Four with friends, the computer, or on one phone.">
+<meta property="og:image" content="https://supermaniagames.github.io/connect-four/home-logo.png">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="icon-192.png"><link rel="apple-touch-icon" href="icon-192.png">
 <link rel="stylesheet" href="style.css">
 </head><body>
@@ -20,6 +25,7 @@
   <button class="mode" data-go="bot"><b>Computer</b></button>
   <button class="mode wide" data-go="pass"><b>Pass N Play</b></button>
  </div>
+ <button class="btn" id="howbtn" data-go="how">How to play</button>
  <button class="btn" id="shareapp">Share app</button>
  <button class="btn p" id="install" hidden>Install app</button>
  <p class="credit">Made by <b>Supermania Games</b> · Presented by <b>Boring Games</b></p>
@@ -62,6 +68,28 @@
  <button class="btn" id="join">Join room</button>
  <p class="err" id="ferr"></p>
  <button class="btn" data-back>Back</button>
+</section>
+
+<section class="sc" id="how" hidden>
+ <h2>How to play</h2>
+ <div class="seg" data-k="how"><button data-v="basics">Basics</button><button data-v="winning">Winning</button><button data-v="modes">Modes</button></div>
+ <div class="hp" data-t="basics"><ul>
+  <li>Two players, Red and Yellow, take turns dropping one disc into any of the 7 columns.</li>
+  <li>A disc falls to the lowest empty spot in the column you pick.</li>
+  <li>Be the first to line up four of your own discs to win.</li>
+  <li>If the board fills up with no line of four, the game is a draw.</li>
+ </ul></div>
+ <div class="hp" data-t="winning" hidden>
+  <div class="minis"><div class="mn"><div class="mini"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i class="r w"></i><i class="r w"></i><i class="r w"></i><i class="r w"></i><i class="y"></i><i class="r"></i><i class="y"></i><i class="r"></i></div><span>Across</span></div><div class="mn"><div class="mini"><i></i><i class="r w"></i><i></i><i></i><i class="y"></i><i class="r w"></i><i></i><i></i><i class="y"></i><i class="r w"></i><i></i><i></i><i class="y"></i><i class="r w"></i><i class="y"></i><i class="y"></i></div><span>Up and down</span></div><div class="mn"><div class="mini"><i class="r w"></i><i></i><i></i><i></i><i class="y"></i><i class="r w"></i><i></i><i></i><i class="y"></i><i class="y"></i><i class="r w"></i><i></i><i class="y"></i><i class="y"></i><i class="y"></i><i class="r w"></i></div><span>Diagonal</span></div><div class="mn"><div class="mini"><i></i><i class="y"></i><i class="y"></i><i class="r w"></i><i></i><i class="y"></i><i class="r w"></i><i></i><i></i><i class="r w"></i><i class="y"></i><i></i><i class="r w"></i><i class="y"></i><i class="y"></i><i class="y"></i></div><span>Diagonal</span></div></div>
+  <p class="hint">Four in a row counts across, up and down, or on either diagonal.</p>
+ </div>
+ <div class="hp" data-t="modes" hidden><ul>
+  <li>Computer: pick Easy, Medium, Hard or Expert. You play Red, and you choose who goes first.</li>
+  <li>Pass N Play: two people share one phone and take turns.</li>
+  <li>Tip: the middle column is the strongest, because it is part of the most lines.</li>
+  <li>Tip: try to build two threats at once. Your opponent can only block one.</li>
+ </ul></div>
+ <button class="btn p" data-back>Back</button>
 </section>
 
 <section class="sc" id="game" hidden>
