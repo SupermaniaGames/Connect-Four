@@ -1,9 +1,14 @@
-// Network-first: always fetch the latest files from GitHub Pages.
-// The cache is only an offline fallback, never served when online.
+// Network-first: every request goes to the network with the HTTP cache bypassed.
+// The cache is only an offline fallback, never served while the network answers.
+// Bump VERSION whenever this file changes so installed copies pick it up and reload once.
+const VERSION=3;
 // Cache name is unique to this app: GitHub Pages shares one origin across repos.
 const CACHE='connect4-offline';
 self.addEventListener('install',()=>self.skipWaiting());
-self.addEventListener('activate',e=>e.waitUntil(self.clients.claim()));
+self.addEventListener('activate',e=>e.waitUntil(
+  caches.keys().then(ks=>Promise.all(ks.filter(k=>k.startsWith('connect4-')&&k!==CACHE).map(k=>caches.delete(k))))
+    .then(()=>self.clients.claim())
+));
 self.addEventListener('fetch',e=>{
   const r=e.request;
   if(r.method!=='GET'||!r.url.startsWith(self.location.origin))return;
@@ -11,6 +16,6 @@ self.addEventListener('fetch',e=>{
     fetch(r,{cache:'no-store'}).then(res=>{
       if(res.ok){const copy=res.clone();caches.open(CACHE).then(c=>c.put(r,copy))}
       return res;
-    }).catch(()=>caches.match(r))
+    }).catch(()=>caches.match(r).then(m=>m||Response.error()))
   );
 });
