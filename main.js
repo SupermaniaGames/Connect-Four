@@ -432,11 +432,23 @@ if('serviceWorker' in navigator){
 let installEvt=null;
 const standalone=matchMedia('(display-mode: standalone)').matches||navigator.standalone;
 const isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent);
-const showInstall=()=>{$('#install').hidden=!!standalone||(!installEvt&&!isIOS)};
+let installedNow=false;
+const showInstall=()=>{$('#install').hidden=!!standalone||installedNow};
 addEventListener('beforeinstallprompt',e=>{e.preventDefault();installEvt=e;showInstall()});
-addEventListener('appinstalled',()=>{installEvt=null;showInstall()});
+addEventListener('appinstalled',()=>{installEvt=null;installedNow=true;showInstall()});
 $('#install').onclick=async()=>{
   if(installEvt){installEvt.prompt();await installEvt.userChoice;installEvt=null;showInstall()}
-  else ask('Install on iPhone','Tap the Share button in Safari, then choose Add to Home Screen.','OK',()=>{},true);
+  else if(isIOS)ask('Install on iPhone','Tap the Share button in Safari, then choose Add to Home Screen.','OK',()=>{},true);
+  else installHelp();
 };
+// the browser has not offered its install prompt: say why it may be, and show what it sees
+async function installHelp(){
+  let m={};const mu=document.querySelector('link[rel=manifest]').href;
+  try{m=await (await fetch(mu,{cache:'no-store'})).json()}catch{}
+  const start=new URL(m.start_url||'.',mu),id=m.id?new URL(m.id,start.origin).href:'(none)',scope=new URL(m.scope||'.',mu).href;
+  ask('Install app',
+   'Chrome has not offered its install prompt. Try the 3 dot menu, then Install app or Add to Home screen.\n\n'+
+   'If it says already installed, uninstall the older copy (long-press its icon, Uninstall), then clear this site\'s data in Chrome and reload.\n\n'+
+   'This app sees:\nid: '+id+'\nscope: '+scope,'OK',()=>{},true);
+}
 showInstall();

@@ -2,32 +2,32 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Supermania Connect Four</title>
-<link rel="manifest" href="manifest.json?v=3">
+<link rel="manifest" href="manifest.json?v=4">
 <meta name="theme-color" content="#070d2b">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Supermania Connect Four">
 <meta property="og:description" content="Play Connect Four with friends, the computer, or on one phone.">
-<meta property="og:image" content="https://supermaniagames.github.io/connect-four/home-logo.png">
+<meta property="og:image" content="https://supermaniagames.github.io/connect-four/icon-512.png">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="icon-192.png"><link rel="apple-touch-icon" href="icon-192.png">
 <link rel="stylesheet" href="style.css">
 </head><body>
-<div id="splash"><img src="splash.png" alt="" onerror="this.parentNode.remove()"></div>
+<div id="splash"><img src="icon-512.png" alt="" onerror="this.parentNode.remove()"></div>
 <script>setTimeout(function(){var s=document.getElementById('splash');if(s)s.remove()},3000)</script>
 <main id="app">
 
 <section class="sc" id="home">
  <div id="me"></div>
- <img id="logo" src="home-logo.png" alt="Supermania Connect Four" onerror="this.hidden=true;document.getElementById('wm').hidden=false">
+ <img id="logo" src="icon-512.png" alt="Supermania Connect Four" onerror="this.hidden=true;document.getElementById('wm').hidden=false">
  <h1 id="wm" hidden><small>SUPERMANIA</small>CONNECT FOUR</h1>
  <div class="grid">
-  <button class="mode" data-go="friends"><b>Play with friends</b></button>
-  <button class="mode" data-go="bot"><b>Computer</b></button>
-  <button class="mode wide" data-go="pass"><b>Pass N Play</b></button>
+  <button class="mode" data-go="friends"><span>👥</span><b>Play with friends</b></button>
+  <button class="mode" data-go="bot"><span>🤖</span><b>Computer</b></button>
+  <button class="mode wide" data-go="pass"><span>🎲</span><b>Pass N Play</b></button>
  </div>
- <button class="btn" id="howbtn" data-go="how">How to play</button>
- <button class="btn" id="shareapp">Share app</button>
- <button class="btn p" id="install" hidden>Install app</button>
+ <button class="btn" id="howbtn" data-go="how">❓ How to play</button>
+ <button class="btn" id="shareapp">📤 Share app</button>
+ <button class="btn p" id="install">⬇ Install app</button>
  <p class="credit">Made by <b>Supermania Games</b> · Presented by <b>Boring Games</b></p>
 </section>
 
