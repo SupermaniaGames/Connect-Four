@@ -46,7 +46,7 @@ input{font:inherit;font-weight:700;width:100%;padding:12px;border-radius:12px;bo
 #avgrid button.on{border-color:var(--gold);background:var(--gold)}
 
 /* game screen */
-#game{position:relative;min-height:calc(100dvh - 24px);justify-content:center;--bw:min(100%,480px,calc((100dvh - 270px)/1.08))}
+#game{position:relative;min-height:calc(100dvh - 24px);justify-content:center;--bw:min(100%,480px,calc((100dvh - 320px)/1.08))}
 #bar{position:absolute;top:0;left:0;right:0;display:flex;align-items:center;gap:10px}
 #bar .btn{width:auto;padding:8px 14px}
 #mute{margin-left:auto}
@@ -163,3 +163,24 @@ input{font:inherit;font-weight:700;width:100%;padding:12px;border-radius:12px;bo
 .mini i.r{background:radial-gradient(circle at 36% 30%,#ff9a9a,#e5232f 55%,#7d060f)}
 .mini i.y{background:radial-gradient(circle at 36% 30%,#fff7a8,#ffd21f 55%,#b98200)}
 .mini i.w{box-shadow:0 0 0 2px #fff,0 0 8px 2px #fff}
+
+/* lobby, series line, timer badge, chat */
+#rcode{font-size:4rem;font-weight:900;letter-spacing:.2em;background:#fff;color:var(--ink);border-radius:16px;padding:6px 6px 6px 22px;border:4px solid var(--gold)}
+#plist{list-style:none;width:100%;display:grid;gap:6px;padding:0}
+#plist li{background:#0b2f86cc;border-radius:10px;padding:10px 14px;font-weight:800;border-left:8px solid var(--c)}
+#series,#note{width:var(--bw);text-align:center}
+#note{min-height:1.3em;font-weight:800;color:var(--gold)}
+.pc{position:relative}
+.pc[data-t]::after{content:attr(data-t);position:absolute;top:-12px;left:50%;transform:translateX(-50%);min-width:28px;height:26px;padding:0 6px;border-radius:13px;background:#ffd54a;color:#14286b;font-weight:900;display:grid;place-items:center;font-size:.85rem;border:2px solid #fff;z-index:4}
+.pc[data-t="3"]::after,.pc[data-t="2"]::after,.pc[data-t="1"]::after,.pc[data-t="0"]::after{background:#ff4a4a;color:#fff}
+#chatbtn{position:fixed;right:14px;bottom:calc(env(safe-area-inset-bottom) + 14px);width:54px;height:54px;border-radius:50%;border:3px solid var(--gold);background:#0b2f86;font-size:1.6rem;z-index:20;cursor:pointer}
+#chatbtn.new::after{content:'';position:absolute;top:0;right:0;width:14px;height:14px;border-radius:50%;background:#ff4a4a;border:2px solid #fff}
+#chat{position:fixed;left:0;right:0;bottom:0;height:55dvh;max-width:480px;margin:auto;background:#0a2670f2;border:3px solid var(--gold);border-bottom:0;border-radius:18px 18px 0 0;z-index:30;display:flex;flex-direction:column;padding:10px;gap:8px}
+#chead{display:flex;justify-content:space-between;align-items:center;font-size:1.2rem}
+#cclose{width:42px;height:42px;border-radius:50%;border:3px solid var(--gold);background:#0b2f86;color:#fff;font-size:1.1rem;cursor:pointer}
+#msgs{flex:1;overflow:auto;display:flex;flex-direction:column;gap:6px}
+.m{background:#ffffff22;border-radius:12px;padding:6px 10px;max-width:85%;overflow-wrap:anywhere}
+.m b{display:block;font-size:.75rem;color:var(--gold)}
+.m.me{align-self:flex-end;background:#ffc21a33}
+#cin{display:flex;gap:8px}#cin input{text-align:left}#cin .btn{width:auto}
+.btn:disabled{opacity:.55;cursor:default}

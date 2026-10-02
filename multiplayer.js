@@ -1,6 +1,6 @@
 import {initializeApp} from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
-import {getAuth,onAuthStateChanged,createUserWithEmailAndPassword,signInWithEmailAndPassword,signOut,updateProfile,signInAnonymously} from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
-import {getFirestore,doc,onSnapshot,updateDoc,runTransaction,collection,addDoc,query,orderBy,limit,serverTimestamp} from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+import {getAuth,onAuthStateChanged,createUserWithEmailAndPassword,signInWithEmailAndPassword,signOut,updateProfile,signInAnonymously,deleteUser} from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+import {getFirestore,doc,getDoc,setDoc,onSnapshot,updateDoc,runTransaction,collection,addDoc,query,orderBy,limit,serverTimestamp} from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
 import * as fc from './firebase-config.js';
 
 const cfg=fc.firebaseConfig||fc.default;
@@ -13,14 +13,28 @@ const R=c=>doc(db,'connect4Rooms',c);
 export const me=()=>auth.currentUser&&{uid:auth.currentUser.uid,name:auth.currentUser.displayName||''};
 export const onUser=cb=>onAuthStateChanged(auth,cb);
 export const signIn=(u,p)=>signInWithEmailAndPassword(auth,mail(u),p);
-export const signUp=async(u,p)=>{const c=await createUserWithEmailAndPassword(auth,mail(u),p);await updateProfile(c.user,{displayName:u})};
+// Username accounts: the username is the login (stored lower-case as usernames/{name}), the password is the password.
+// The same account works in every Supermania game that uses this Firebase project.
+export const nameTaken=async u=>(await getDoc(doc(db,'usernames',u.toLowerCase()))).exists();
+export const signUp=async(u,p)=>{
+  if(await nameTaken(u))throw {code:'auth/email-already-in-use'};
+  const c=await createUserWithEmailAndPassword(auth,mail(u),p);
+  try{await setDoc(doc(db,'usernames',u.toLowerCase()),{uid:c.user.uid,name:u})}
+  catch(e){await deleteUser(c.user).catch(()=>{});throw {code:'auth/email-already-in-use'}}
+  await updateProfile(c.user,{displayName:u});
+  await setDoc(doc(db,'players',c.user.uid),{name:u,created:Date.now()},{merge:true}).catch(()=>{});
+};
+// the chosen character follows the account (field c4av, so other games' fields are left alone)
+export const saveProfile=av=>{const u=auth.currentUser;return u?setDoc(doc(db,'players',u.uid),{name:u.displayName||'',c4av:av},{merge:true}):Promise.resolve()};
+export const loadProfile=async()=>{const u=auth.currentUser;if(!u)return null;const s=await getDoc(doc(db,'players',u.uid));return s.exists()?s.data():null};
 export const guest=async(name)=>{const c=await signInAnonymously(auth);await updateProfile(c.user,{displayName:name})};
 export const logout=()=>signOut(auth);
 
-// Room document (all flat, no nested arrays):
-// host, status ('lobby'|'play'|'done'), created, players:[{uid,name,av}] (seat 0 = Red, seat 1 = Yellow),
-// b: 42 numbers (0 empty, 1 red, 2 yellow; index = row*7+col, row 0 = top),
-// turn (1|2), moves, win: [cell indexes] or [].
+// Room document (flat, no nested arrays). Seat 1 = host, seat 2 = guest.
+// status: 'lobby' | 'play' | 'done' (game over, next game coming) | 'series' (best-of-5 over) | 'closed'
+// b: 42 numbers (0 empty, 1 or 2 = seat; index = row*7+col, row 0 = top), turn (seat), moves, win: [cell indexes]
+// game (1-5), gid (changes every started game), starter, s1/s2 game wins, idle1/idle2 missed turns in a row,
+// rm1/rm2 rematch votes, sw (series winner seat), why ('win'|'forfeit'|'left'), gone (seat that left), lc (last column)
 export async function createRoom(av){
   const u=me();
   for(let n=0;n<10;n++){
@@ -29,7 +43,8 @@ export async function createRoom(av){
       await runTransaction(db,async tx=>{
         const s=await tx.get(R(code));
         if(s.exists()&&Date.now()-s.data().created<6*36e5)throw 'taken';
-        tx.set(R(code),{host:u.uid,status:'lobby',created:Date.now(),players:[{uid:u.uid,name:u.name,av:av||'🙂'}],b:Array(42).fill(0),turn:1,moves:0,win:[]});
+        tx.set(R(code),{host:u.uid,status:'lobby',created:Date.now(),players:[{uid:u.uid,name:u.name,av:av||'🙂'}],
+          b:Array(42).fill(0),turn:1,moves:0,win:[],game:1,gid:0,starter:1,s1:0,s2:0,idle1:0,idle2:0,rm1:false,rm2:false,sw:0,why:'',gone:0,lc:-1});
       });
       return code;
     }catch(e){if(e!=='taken')throw e}
@@ -47,9 +62,18 @@ export const joinRoom=(code,av)=>runTransaction(db,async tx=>{
   tx.update(R(code),{players:[...d.players,{uid:u.uid,name:u.name,av:av||'🙂'}]});
 });
 
-export const watchRoom=(code,cb)=>onSnapshot(R(code),s=>cb(s.exists()?s.data():null,s.metadata.hasPendingWrites));
+// fn(roomData) returns a patch object to write, or null to do nothing. It may run more than once, so keep it pure.
+export const txRoom=(code,fn)=>runTransaction(db,async tx=>{
+  const s=await tx.get(R(code));
+  if(!s.exists())return false;
+  const patch=fn(s.data());
+  if(!patch)return false;
+  tx.update(R(code),patch);return true;
+});
+
+export const watchRoom=(code,cb,err)=>onSnapshot(R(code),s=>cb(s.exists()?s.data():null,s.metadata.hasPendingWrites),err);
 export const setRoom=(code,patch)=>updateDoc(R(code),patch);
 
 const CH=code=>collection(db,'connect4Rooms',code,'chat');
 export const sendChat=(code,text)=>addDoc(CH(code),{uid:me().uid,name:me().name,text,ts:serverTimestamp()});
-export const watchChat=(code,cb)=>onSnapshot(query(CH(code),orderBy('ts'),limit(60)),s=>cb(s.docs.map(d=>d.data())));
+export const watchChat=(code,cb)=>onSnapshot(query(CH(code),orderBy('ts'),limit(60)),s=>cb(s.docs.map(d=>d.data())),()=>{});

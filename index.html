@@ -84,21 +84,39 @@
   <p class="hint">Four in a row counts across, up and down, or on either diagonal.</p>
  </div>
  <div class="hp" data-t="modes" hidden><ul>
+  <li>Play with friends: one player creates a room and shares the 4-digit code or the WhatsApp link. You play a series of up to 5 games, and the first to win 3 takes it. Draws are replayed. On your own phone you are always Red.</li>
+  <li>Timer: online and against the computer you have 10 seconds per turn. If time runs out, a move is played for you. Miss 3 turns in a row and you lose the series online, or the game closes against the computer.</li>
   <li>Computer: pick Easy, Medium, Hard or Expert. You play Red, and you choose who goes first.</li>
-  <li>Pass N Play: two people share one phone and take turns.</li>
+  <li>Pass N Play: two people share one phone and take turns. There is no timer.</li>
   <li>Tip: the middle column is the strongest, because it is part of the most lines.</li>
   <li>Tip: try to build two threats at once. Your opponent can only block one.</li>
  </ul></div>
  <button class="btn p" data-back>Back</button>
 </section>
 
+<section class="sc" id="lobby" hidden>
+ <h2>Room code</h2>
+ <div id="rcode"></div>
+ <ul id="plist"></ul>
+ <p id="lmsg"></p>
+ <button class="btn p" id="wa">Share on WhatsApp</button>
+ <button class="btn" id="copy">Copy invite link</button>
+ <p class="hint" id="link"></p>
+ <button class="btn p" id="start" hidden>Start game</button>
+ <button class="btn" data-back>Leave</button>
+</section>
+
 <section class="sc" id="game" hidden>
  <div id="bar"><button class="btn" data-back>Menu</button><div id="status"></div><button class="btn" id="mute" aria-label="Sound on or off">Sound</button></div>
  <div class="crow" id="cards"></div>
+ <div class="hint" id="series" hidden></div>
+ <div class="hint" id="note"></div>
  <div id="board"></div>
 </section>
 
 </main>
+
+<button id="chatbtn" hidden aria-label="Chat">💬</button>
 
 <div id="result" hidden>
  <div id="confetti"></div>
@@ -114,6 +132,12 @@
   <p id="dp"></p>
   <div class="rbtns"><button class="btn" id="dno">Stay</button><button class="btn p" id="dyes">Leave</button></div>
  </div>
+</div>
+
+<div id="chat" hidden>
+ <div id="chead"><b>Chat</b><button id="cclose" aria-label="Close chat">✕</button></div>
+ <div id="msgs"></div>
+ <div id="cin"><input id="ct" maxlength="200" placeholder="Message"><button class="btn p" id="send">Send</button></div>
 </div>
 
 <script type="module" src="main.js"></script>

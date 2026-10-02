@@ -1,7 +1,7 @@
 // Network-first: every request goes to the network with the HTTP cache bypassed.
 // The cache is only an offline fallback, never served while the network answers.
 // Bump VERSION whenever this file changes so installed copies pick it up and reload once.
-const VERSION=4;
+const VERSION=5;
 // Cache name is unique to this app: GitHub Pages shares one origin across repos.
 const CACHE='connect4-offline';
 self.addEventListener('install',()=>self.skipWaiting());
